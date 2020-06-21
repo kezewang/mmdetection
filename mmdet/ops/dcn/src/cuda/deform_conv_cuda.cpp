@@ -101,13 +101,13 @@ void shape_check(at::Tensor input, at::Tensor offset, at::Tensor *gradOutput,
   TORCH_CHECK(ndim == 3 || ndim == 4, "3D or 4D input tensor expected but got: %s",
            ndim);
 
-  long nInputPlane = weight.size(1) * group;
-  long inputHeight = input.size(dimh);
-  long inputWidth = input.size(dimw);
-  long nOutputPlane = weight.size(0);
-  long outputHeight =
+  int64_t nInputPlane = weight.size(1) * group;
+  int64_t inputHeight = input.size(dimh);
+  int64_t inputWidth = input.size(dimw);
+  int64_t nOutputPlane = weight.size(0);
+  int64_t outputHeight =
       (inputHeight + 2 * padH - (dilationH * (kH - 1) + 1)) / dH + 1;
-  long outputWidth =
+  int64_t outputWidth =
       (inputWidth + 2 * padW - (dilationW * (kW - 1) + 1)) / dW + 1;
 
   TORCH_CHECK(nInputPlane % deformable_group == 0,
@@ -179,16 +179,16 @@ int deform_conv_forward_cuda(at::Tensor input, at::Tensor weight,
 
   // todo: assert batchsize dividable by im2col_step
 
-  long batchSize = input.size(0);
-  long nInputPlane = input.size(1);
-  long inputHeight = input.size(2);
-  long inputWidth = input.size(3);
+  int64_t batchSize = input.size(0);
+  int64_t nInputPlane = input.size(1);
+  int64_t inputHeight = input.size(2);
+  int64_t inputWidth = input.size(3);
 
-  long nOutputPlane = weight.size(0);
+  int64_t nOutputPlane = weight.size(0);
 
-  long outputWidth =
+  int64_t outputWidth =
       (inputWidth + 2 * padW - (dilationW * (kW - 1) + 1)) / dW + 1;
-  long outputHeight =
+  int64_t outputHeight =
       (inputHeight + 2 * padH - (dilationH * (kH - 1) + 1)) / dH + 1;
 
   TORCH_CHECK((offset.size(0) == batchSize), "invalid batch size of offset");
@@ -286,16 +286,16 @@ int deform_conv_backward_input_cuda(at::Tensor input, at::Tensor offset,
         {1, gradOutput.size(0), gradOutput.size(1), gradOutput.size(2)});
   }
 
-  long batchSize = input.size(0);
-  long nInputPlane = input.size(1);
-  long inputHeight = input.size(2);
-  long inputWidth = input.size(3);
+  int64_t batchSize = input.size(0);
+  int64_t nInputPlane = input.size(1);
+  int64_t inputHeight = input.size(2);
+  int64_t inputWidth = input.size(3);
 
-  long nOutputPlane = weight.size(0);
+  int64_t nOutputPlane = weight.size(0);
 
-  long outputWidth =
+  int64_t outputWidth =
       (inputWidth + 2 * padW - (dilationW * (kW - 1) + 1)) / dW + 1;
-  long outputHeight =
+  int64_t outputHeight =
       (inputHeight + 2 * padH - (dilationH * (kH - 1) + 1)) / dH + 1;
 
   TORCH_CHECK((offset.size(0) == batchSize), 3, "invalid batch size of offset");
@@ -402,16 +402,16 @@ int deform_conv_backward_parameters_cuda(
         {1, gradOutput.size(0), gradOutput.size(1), gradOutput.size(2)});
   }
 
-  long batchSize = input.size(0);
-  long nInputPlane = input.size(1);
-  long inputHeight = input.size(2);
-  long inputWidth = input.size(3);
+  int64_t batchSize = input.size(0);
+  int64_t nInputPlane = input.size(1);
+  int64_t inputHeight = input.size(2);
+  int64_t inputWidth = input.size(3);
 
-  long nOutputPlane = gradWeight.size(0);
+  int64_t nOutputPlane = gradWeight.size(0);
 
-  long outputWidth =
+  int64_t outputWidth =
       (inputWidth + 2 * padW - (dilationW * (kW - 1) + 1)) / dW + 1;
-  long outputHeight =
+  int64_t outputHeight =
       (inputHeight + 2 * padH - (dilationH * (kH - 1) + 1)) / dH + 1;
 
   TORCH_CHECK((offset.size(0) == batchSize), "invalid batch size of offset");
